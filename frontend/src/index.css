@@ -1,0 +1,26 @@
+/* frontend/src/index.css */
+
+/* Reset margin, padding, and box-sizing across all elements */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Style the global body element */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f3f4f6; /* Soft gray color for your site's backdrop */
+  color: #1f2937; /* Off-black tone for easier reading text */
+  min-height: 100vh;
+}
+
+/* Helper rules for code elements (default CRA styling) */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

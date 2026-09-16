@@ -2,7 +2,8 @@ import React from 'react';
 import './Profile.css';
 
 const ProfileTemplate = () => {
-  // Easily swap this object data out for your own details
+  // Static profile data
+  
   const profileData = {
     name: "Homer J. Simpson",
     title: "Safety Inspector & Nuclear Technician",

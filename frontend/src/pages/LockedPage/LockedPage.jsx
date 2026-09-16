@@ -13,7 +13,7 @@ export default function LockedPage() {
   // Automatically check for a valid session token on load/refresh
   useEffect(() => {
     if (token) {
-      fetch('http://localhost:5000/api/protected-data', {
+      fetch('https://project-pvnd.onrender.com/api/protected-data', { //http://localhost:5000/api/protected-data
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {
@@ -35,7 +35,7 @@ export default function LockedPage() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/verify-passcode', {
+      const response = await fetch('https://project-pvnd.onrender.com/api/verify-passcode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passcode })

@@ -1,7 +1,7 @@
 {
   "name": "lock-screen-frontend",
   "version": "0.1.0",
-  "homepage": "https://dann-chan.github.io/Project/",
+  "homepage": "https://dann-chan.github.io",
   "private": true,
   "dependencies": {
     "react": "^18.3.1",

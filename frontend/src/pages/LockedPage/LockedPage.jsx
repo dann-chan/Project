@@ -75,9 +75,9 @@ export default function LockedPage() {
     <div className="lock-container">
       <div className="lock-card">
         <div className="lock-icon">{isLockedOut ? '⏳' : '🔒'}</div>
-        <h1 className="lock-title">Restricted Access</h1>
-        <p className="lock-subtitle">Please enter your authentication credentials to unlock this portal.</p>
-        <p className="lock-note">(Note: May take upto 30sec if the server fell asleep)</p>
+        <h1 className="lock-title">Profile Locked</h1>
+        <p className="lock-subtitle">Please enter the passcode to unlock Danny's profile.</p>
+        <p className="lock-note">(May take up to 30 seconds if the server fell asleep)</p>
         
         <form onSubmit={handleSubmit} className="lock-form">
           <input 

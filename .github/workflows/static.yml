@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # If using Vite, path is frontend/dist. If Create-React-App, path is frontend/build
-          path: 'frontend/dist' 
+          path: 'frontend/build' 
 
       - name: Deploy to GitHub Pages
         id: deployment

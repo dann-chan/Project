@@ -129,5 +129,14 @@ export default function LockedPage() {
         {error && <p className="lock-error">{error}</p>}
       </div>
     </div>
+    
+// Cleaned up button element inside LockedPage.jsx
+<button 
+  type="submit" 
+  className="lock-button"
+  disabled={isLockedOut} 
+>
+  {isLockedOut ? `Locked (${countdown}s)` : 'Authenticate'}
+</button>
   );
 }

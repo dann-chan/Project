@@ -53,8 +53,16 @@
   gap: 12px;
 }
 
+/* Container to house the absolute-positioned toggle button */
+.lock-input-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
 .lock-input {
-  padding: 12px 16px;
+  width: 100%;
+  padding: 12px 44px 12px 16px; /* Right padding preserves room for the emoji icon */
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
@@ -62,6 +70,7 @@
   letter-spacing: 4px;
   outline: none;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .lock-input:focus {
@@ -69,7 +78,6 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-/* ⏳ Styling for the input when locked out */
 .lock-input:disabled {
   background-color: #f9fafb;
   border-color: #e5e7eb;
@@ -77,7 +85,28 @@
   cursor: not-allowed;
 }
 
+/* Position toggle button on top of the input fields far right boundary */
+.lock-toggle-visible {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
 .lock-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 12px;
   font-size: 16px;
   font-weight: 600;
@@ -87,20 +116,36 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .lock-button:hover:not(:disabled) {
   background-color: #1d4ed8;
 }
 
-/* ⏳ Styling for the button when locked out (removes the need for inline React styles) */
 .lock-button:disabled {
   background-color: #9ca3af;
   color: #f3f4f6;
   cursor: not-allowed;
 }
 
-/* 🚨 Error message with a clean error layout and an entry shake animation */
+/* 🌀 CSS Loading Spinner rules */
+.lock-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .lock-error {
   color: #dc2626;
   background-color: #fef2f2;
@@ -114,7 +159,6 @@
   animation: shake 0.4s ease-in-out;
 }
 
-/* 🫨 Smooth shake animation for incorrect entry feedback */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-6px); }

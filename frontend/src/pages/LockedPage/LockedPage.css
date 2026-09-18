@@ -102,6 +102,14 @@
   user-select: none;
 }
 
+.lock-toggle-visible svg {
+  transition: stroke 0.2s ease;
+}
+
+.lock-toggle-visible:hover svg {
+  stroke: #1f2937; /* Darkens the icon on hover */
+}
+
 .lock-button {
   display: flex;
   align-items: center;

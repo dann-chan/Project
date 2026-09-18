@@ -35,13 +35,14 @@
 .lock-subtitle {
   font-size: 14px;
   color: #6b7280;
-  margin: 0 0 24px 0;
+  margin: 0 0 4px 0;
   line-height: 1.5;
 }
 
 .lock-note {
-  font-size: 10px;
-  color: #6b7280;
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -60,11 +61,20 @@
   text-align: center;
   letter-spacing: 4px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .lock-input:focus {
   border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ⏳ Styling for the input when locked out */
+.lock-input:disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .lock-button {
@@ -76,16 +86,37 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
-.lock-button:hover {
+.lock-button:hover:not(:disabled) {
   background-color: #1d4ed8;
 }
 
+/* ⏳ Styling for the button when locked out (removes the need for inline React styles) */
+.lock-button:disabled {
+  background-color: #9ca3af;
+  color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* 🚨 Error message with a clean error layout and an entry shake animation */
 .lock-error {
   color: #dc2626;
-  font-size: 14px;
-  margin-top: 14px;
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 18px;
   font-weight: 500;
+  line-height: 1.4;
+  animation: shake 0.4s ease-in-out;
+}
+
+/* 🫨 Smooth shake animation for incorrect entry feedback */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
 }

@@ -10,13 +10,13 @@ export default function LockedPage() {
   const [error, setError] = useState('');
   const [isLockedOut, setIsLockedOut] = useState(false); 
   const [countdown, setCountdown] = useState(0); 
-  const [isLoading, setIsLoading] = useState(false); // ⏳ Track loading state
-  const [showPassword, setShowPassword] = useState(false); // 👁️ Track visibility toggle
+  const [isLoading, setIsLoading] = useState(false); // ⏳ Tracks active server checking state
+  const [showPassword, setShowPassword] = useState(false); // 👁️ Tracks show/hide visibility toggle
 
   // Automatically check for a valid session token on load/refresh
   useEffect(() => {
     if (token) {
-      fetch('https://onrender.com', { 
+      fetch('https://project-pvnd.onrender.com/api/protected-data', { 
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {
@@ -31,7 +31,7 @@ export default function LockedPage() {
     }
   }, [token]);
 
-  // Handle the visual lockout countdown timer
+  // ⏱️ Handle the visual lockout countdown timer
   useEffect(() => {
     if (countdown <= 0) {
       setIsLockedOut(false);
@@ -55,13 +55,13 @@ export default function LockedPage() {
   // Handle the form submission when user enters a passcode
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!passcode.trim()) return; // Don't submit blank text
-    
+    if (!passcode.trim()) return; // Prevent empty submissions
+
     setError('');
-    setIsLoading(true); // Start loading indicator
+    setIsLoading(true); // Toggle loading spinner active
 
     try {
-      const response = await fetch('https://onrender.com', {
+      const response = await fetch('https://project-pvnd.onrender.com/api/verify-passcode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passcode })
@@ -78,16 +78,18 @@ export default function LockedPage() {
         
         if (data.isLockedOut) {
           setIsLockedOut(true);
-          const secondsLeft = data.message.match(/\d+/) 
-            ? parseInt(data.message.match(/\d+/)[0], 10) 
-            : 300;
+          
+          // 🛡️ Safe match processing to prevent null pointer index crashes
+          const matchResult = data.message ? data.message.match(/\d+/) : null;
+          const secondsLeft = matchResult ? parseInt(matchResult[0], 10) : 300;
           setCountdown(secondsLeft);
         }
       }
     } catch (err) {
+      console.error("Authentication submission error details:", err);
       setError('Server unreachable. Is your Node.js backend running?');
     } finally {
-      setIsLoading(false); // Stop loading indicator no matter what
+      setIsLoading(false); // Toggle loading spinner inactive
     }
   };
 
@@ -104,8 +106,8 @@ export default function LockedPage() {
     return <ProfilePage secretData={secretData} onLogout={handleLogout} />;
   }
 
-  // Determine button text contextually
-  const getButtonText = () => {
+  // Helper handling of dynamic button label variants
+  const renderButtonContent = () => {
     if (isLockedOut) return `Locked (${countdown}s)`;
     if (isLoading) return 'Verifying...';
     return 'Authenticate';
@@ -121,7 +123,6 @@ export default function LockedPage() {
         <p className="lock-note">(May take up to 30 seconds if the server fell asleep)</p>
         
         <form onSubmit={handleSubmit} className="lock-form">
-          {/* Input container wrapped for positioning the toggle icon */}
           <div className="lock-input-wrapper">
             <input 
               type={showPassword ? 'text' : 'password'} 
@@ -132,25 +133,25 @@ export default function LockedPage() {
               maxLength={12}
               disabled={isLockedOut || isLoading} 
             />
+            {/* Display show/hide toggle only when characters are present and app isn't locked */}
             {!isLockedOut && passcode && (
               <button
                 type="button"
                 className="lock-toggle-visible"
                 onClick={() => setShowPassword(!showPassword)}
-                title={showPassword ? "Hide passcode" : "Show passcode"}
               >
                 {showPassword ? '🙈' : '👁️'}
               </button>
             )}
           </div>
-
+          
           <button 
             type="submit" 
             className="lock-button"
             disabled={isLockedOut || isLoading} 
           >
             {isLoading && <span className="lock-spinner"></span>}
-            {getButtonText()}
+            {renderButtonContent()}
           </button>
         </form>
         

@@ -73,7 +73,6 @@ export default function LockedPage() {
         
         if (data.isLockedOut) {
           setIsLockedOut(true);
-          // If the backend provided a precise time left, use it. Otherwise, default to 300s (5m)
           const secondsLeft = data.message.match(/\d+/) 
             ? parseInt(data.message.match(/\d+/)[0], 10) 
             : 300;
@@ -120,7 +119,6 @@ export default function LockedPage() {
             type="submit" 
             className="lock-button"
             disabled={isLockedOut} 
-            style={isLockedOut ? { backgroundColor: '#9ca3af', cursor: 'not-allowed' } : {}}
           >
             {isLockedOut ? `Locked (${countdown}s)` : 'Authenticate'}
           </button>
@@ -129,14 +127,5 @@ export default function LockedPage() {
         {error && <p className="lock-error">{error}</p>}
       </div>
     </div>
-    
-// Cleaned up button element inside LockedPage.jsx
-<button 
-  type="submit" 
-  className="lock-button"
-  disabled={isLockedOut} 
->
-  {isLockedOut ? `Locked (${countdown}s)` : 'Authenticate'}
-</button>
   );
 }

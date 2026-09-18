@@ -1,19 +1,20 @@
 // frontend/src/pages/LockedPage/LockedPage.jsx
 import React, { useState, useEffect } from 'react';
-import ProfilePage from '../Profile/Profile'; // <-- Imports your Profile component
-import './LockedPage.css'; // <-- Imports the layout styles below
+import ProfilePage from '../Profile/Profile'; 
+import './LockedPage.css'; 
 
 export default function LockedPage() {
   const [passcode, setPasscode] = useState('');
   const [token, setToken] = useState(sessionStorage.getItem('page_token') || '');
   const [secretData, setSecretData] = useState('');
   const [error, setError] = useState('');
-  const [isLockedOut, setIsLockedOut] = useState(false); // Tracks lockout UI state
+  const [isLockedOut, setIsLockedOut] = useState(false); 
+  const [countdown, setCountdown] = useState(0); // Tracks remaining lockout seconds
 
   // Automatically check for a valid session token on load/refresh
   useEffect(() => {
     if (token) {
-      fetch('https://project-pvnd.onrender.com/api/protected-data', { //http://localhost:5000/api/protected-data
+      fetch('https://project-pvnd.onrender.com/api/protected-data', { 
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {
@@ -22,12 +23,32 @@ export default function LockedPage() {
       })
       .then(data => setSecretData(data.secretContent))
       .catch(() => {
-        // Clear token if it is expired or invalid
         sessionStorage.removeItem('page_token');
         setToken('');
       });
     }
   }, [token]);
+
+  // ⏱️ Handle the visual lockout countdown timer
+  useEffect(() => {
+    if (countdown <= 0) {
+      setIsLockedOut(false);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setIsLockedOut(false);
+          setError(''); // Clear the lockout error message when time expires
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   // Handle the form submission when user enters a passcode
   const handleSubmit = async (e) => {
@@ -44,12 +65,19 @@ export default function LockedPage() {
 
       if (data.success) {
         setIsLockedOut(false);
+        setCountdown(0);
         sessionStorage.setItem('page_token', data.token);
         setToken(data.token);
       } else {
         setError(data.message);
+        
         if (data.isLockedOut) {
-          setIsLockedOut(true); // Disables inputs if server signals a lockout
+          setIsLockedOut(true);
+          // If the backend provided a precise time left, use it. Otherwise, default to 300s (5m)
+          const secondsLeft = data.message.match(/\d+/) 
+            ? parseInt(data.message.match(/\d+/)[0], 10) 
+            : 300;
+          setCountdown(secondsLeft);
         }
       }
     } catch (err) {
@@ -57,7 +85,6 @@ export default function LockedPage() {
     }
   };
 
-  // Safe logout function passed down to the Profile page
   const handleLogout = () => {
     sessionStorage.removeItem('page_token');
     setToken('');
@@ -65,12 +92,12 @@ export default function LockedPage() {
     setPasscode('');
   };
 
-  // 🔓 VIEW 1: IF UNLOCKED -> Swap out lock screen and show the profile
+  // 🔓 VIEW 1: IF UNLOCKED
   if (token && secretData) {
     return <ProfilePage secretData={secretData} onLogout={handleLogout} />;
   }
 
-  // 🔒 VIEW 2: IF LOCKED -> Render the lock screen UI
+  // 🔒 VIEW 2: IF LOCKED
   return (
     <div className="lock-container">
       <div className="lock-card">
@@ -87,15 +114,15 @@ export default function LockedPage() {
             onChange={(e) => setPasscode(e.target.value)} 
             className="lock-input"
             maxLength={12}
-            disabled={isLockedOut} // Disables input during lockout
+            disabled={isLockedOut} 
           />
           <button 
             type="submit" 
             className="lock-button"
-            disabled={isLockedOut} // Disables button during lockout
+            disabled={isLockedOut} 
             style={isLockedOut ? { backgroundColor: '#9ca3af', cursor: 'not-allowed' } : {}}
           >
-            {isLockedOut ? 'Locked Out' : 'Authenticate'}
+            {isLockedOut ? `Locked (${countdown}s)` : 'Authenticate'}
           </button>
         </form>
         
